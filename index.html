@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="description" content="">
+		<meta name="keywords" content="">
+		<meta name="author" content="Kyle Keller">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Weather App</title>
+		<link rel="icon" type="image/x-icon" href="images/favicon.svg">
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+		<link rel="stylesheet" href="css/styles.css">
+		<script type="text/javascript" src="js/script.js" defer></script>
+	</head>
+	<body>
+		<script>0</script> <!-- dummy script to prevent Flash of Unstyled Content (FOUC) in FF -->
+		<main>
+			<div class="wrapper">
+				<h1 class="sr-only">Weather Web App</h1>
+				<div id="todays-forecast">
+					<h2 class="sr-only">Today's Forecast</h2>
+					<button id="toggle-info" aria-controls="station-info" aria-expanded="false">
+						<span class="sr-only">Toggle location info</span>
+						<img src="images/info.svg" alt="" aria-hidden="true" />
+					</button>
+					<div id="station-info" aria-hidden="true">
+
+					</div>
+				</div>
+				<div class="forecasts">
+					<h2>7-day Forcast</h2>
+					<div id="seven-forecast">
+					
+					</div>
+				</div>
+			</div>
+		</main>
+	</body>
+</html>

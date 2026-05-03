@@ -1,0 +1,189 @@
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: "Open Sans", sans-serif;
+	font-size: 100%;
+	color: #fff;
+	background: #758A93; /* fall back */
+	background: linear-gradient(90deg,rgba(117, 138, 147, 1) 0%, rgba(0, 90, 156, 1) 100%);
+}
+
+.wrapper {
+	width: 100%;
+	padding: 20px;
+	margin: 0 auto;
+	@media(min-width: 800px) {
+		display: flex;
+		justify-content: space-evenly;
+		max-width: 768px;
+	}
+}
+
+span:not(.temp):not(.temp .high):not(.temp .low) {
+	display: block;
+	margin-bottom: 10px;
+}
+
+.weather-icon {
+	display: block;
+	width: 50px;
+	margin-right: 10px;
+}
+
+#station-info {
+	display: none;
+	position: absolute;
+	top: 55px;
+	z-index: 2;
+	background: #2C3947;
+	padding: 10px;
+	border-radius: 8px;
+
+	&:after {
+		content: "";
+		position: absolute;
+		bottom: 100%;
+		right: 26px;
+		border-width: 6px;
+		border-style: solid;
+		/* Top border is colored, others are transparent */
+		border-color: #2C3947 transparent transparent transparent;
+		transform: rotateX(180deg);
+	}
+
+	&.active {
+		display: block;
+	}
+
+	span {
+		font-size: 0.75rem;
+
+		&.station-id {
+			margin-bottom: 10px;
+		}
+	}
+}
+
+#todays-forecast {
+	width: 100%;
+	max-width: 300px;
+	height: 500px;
+	overflow-x: auto;
+	padding: 20px;
+	margin: 0 auto 20px;
+	backdrop-filter: blur(6px);
+    box-shadow: 0 0 30px rgba(227, 228, 237, 0.37);
+    border: 2px solid rgba(255, 255, 255, 0.18);
+	border-radius: 8px;
+	@media(min-width: 800px) {
+		margin: 0;
+	}
+
+	#toggle-info {
+		position: absolute;
+		right: 20px;
+		background: none;
+		border: none;
+		cursor: pointer;
+
+		&:is(:hover, :focus) {
+			opacity: 0.8;
+		}
+	}
+
+	/* .location {
+		margin-bottom: 10px;
+	} */
+
+	.icon-container {
+		display: flex;
+		align-items: center;
+	}
+
+	.curr-temp {
+		font-size: 4rem;
+	}
+
+	.alert-description {
+		&:before {
+			display: inline-block;
+			content: url('../images/warning.svg');
+			width: 24px;
+			height: 24px;
+			margin-right: 5px;
+			vertical-align: center;
+		}
+	}
+}
+
+.forecasts {
+	width: 100%;
+	max-width: 300px;
+	height: 500px;
+	margin: 0 auto 20px;
+	backdrop-filter: blur(6px);
+    box-shadow: 0 0 30px rgba(227, 228, 237, 0.37);
+    border: 2px solid rgba(255, 255, 255, 0.18);
+	border-radius: 8px;
+	@media(min-width: 800px) {
+		margin: 0;
+	}
+
+	h2 {
+		display: flex;
+		align-items: center;
+		position: sticky;
+		top: 0;
+		font-size: 0.8rem;
+		padding: 10px 0;
+		margin: 0 20px;
+		border-bottom: 1px solid #fff;
+		/* background: #758A93; */
+		/* background: #2C3947; */
+		/* background: #005A9C; */
+		/* background: linear-gradient(90deg,rgba(117, 138, 147, 1) 0%, rgba(0, 90, 156, 1) 100%); */
+		&:before {
+			content: url('../images/calendar.svg');
+			margin-right: 10px;
+		}
+	}
+
+	#seven-forecast {
+		height: calc(100% - 49px);
+		overflow-x: auto;
+		scrollbar-width: thin;
+	}
+
+	.forecast-container {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		padding: 20px;
+
+		.date {
+			display: block;
+			width: 100%;
+			margin-bottom: 10px;
+		}
+
+		.temps-container {
+			display: flex;
+			.temp {
+				margin-right: 10px;
+			}
+		}
+	}
+}
+
+.sr-only {
+	position:absolute;
+	left:-10000px;
+	top:auto;
+	width:1px;
+	height:1px;
+	overflow:hidden;
+}
