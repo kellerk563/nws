@@ -54,23 +54,73 @@ function getIconCode(url) {
 // const result = getPathAfterLastSlash(url);
 // console.log(result); // Output: ovc
 
-if (navigator.geolocation) {
-	navigator.geolocation.getCurrentPosition(showPosition, showError);
-} else {
-	alert("Geolocation is not supported by this browser.");
-}
+// if (navigator.geolocation) {
+// 	navigator.geolocation.getCurrentPosition(showPosition, showError);
+// } else {
+// 	alert("Geolocation is not supported by this browser.");
+// }
 
-function showPosition(position) {
-	const latitude = position.coords.latitude;
-	const longitude = position.coords.longitude;
+// function showPosition(position) {
+// 	const latitude = position.coords.latitude;
+// 	const longitude = position.coords.longitude;
 
-	// Now, use latitude and longitude to fetch weather data
-	fetchWeatherData(latitude, longitude);
-}
+// 	// Now, use latitude and longitude to fetch weather data
+// 	fetchWeatherData(latitude, longitude);
+// }
 
-function showError(error) {
-	console.log("Geolocation error:", error);
-	// Handle the error (e.g., display a message to the user)
+// function showError(error) {
+// 	console.log("Geolocation error:", error);
+// 	// Handle the error (e.g., display a message to the user)
+// }
+
+const DEFAULT_COORDS = {
+	latitude: 38.0336,
+	longitude: -81.0827
+};
+
+async function getUserLocation() {
+	return new Promise((resolve) => {
+		// Check if geolocation is even supported by the browser
+		if (!navigator.geolocation) {
+			console.warn("Geolocation not supported. Using defaults.");
+			return resolve(DEFAULT_COORDS);
+		}
+
+		navigator.geolocation.getCurrentPosition(
+			// SUCCESS CALLBACK
+			(position) => {
+				console.log("Location access granted.");
+				resolve({
+					latitude: position.coords.latitude,
+					longitude: position.coords.longitude
+				});
+			},
+			// ERROR CALLBACK (This is where we handle the decline)
+			(error) => {
+				switch (error.code) {
+					case error.PERMISSION_DENIED:
+						console.warn("User denied location access. Using defaults.");
+						break;
+					case error.POSITION_UNAVAILABLE:
+						console.warn("Location information unavailable. Using defaults.");
+						break;
+					case error.TIMEOUT:
+						console.warn("The request timed out. Using defaults.");
+						break;
+					case error.UNKNOWN_ERROR:
+						console.warn("An unknown error occurred. Using defaults.");
+						break;
+				}
+				// Regardless of the error, we resolve with our default values
+				resolve(DEFAULT_COORDS);
+			},
+			{
+				enableHighAccuracy: true,
+				timeout: 5000, // Stop trying after 5 seconds
+				maximumAge: 0
+			}
+		);
+	});
 }
 
 async function fetchWeatherData(latitude, longitude) {
@@ -523,3 +573,14 @@ infoToggle.addEventListener('click', function() {
 		stationInfo.setAttribute('aria-hidden', 'false');
 	}
 });
+
+async function initApp() {
+	console.log("Fetching location...");
+
+	const coords = await getUserLocation();
+
+	// The rest of your app doesn't care if the data is real or default
+	fetchWeatherData(coords.latitude, coords.longitude);
+}
+
+initApp();
