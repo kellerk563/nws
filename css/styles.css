@@ -4,11 +4,14 @@
 	box-sizing: border-box;
 }
 
+/* background: #005A9C; */
+
 body {
 	font-family: "Open Sans", sans-serif;
 	font-size: 100%;
 	color: #fff;
 	background: #758A93; /* fall back */
+	/* background: #005A9C; */
 	background: linear-gradient(90deg,rgba(117, 138, 147, 1) 0%, rgba(0, 90, 156, 1) 100%);
 }
 
@@ -142,10 +145,6 @@ span:not(.temp):not(.temp .high):not(.temp .low) {
 		padding: 10px 0;
 		margin: 0 20px;
 		border-bottom: 1px solid #fff;
-		/* background: #758A93; */
-		/* background: #2C3947; */
-		/* background: #005A9C; */
-		/* background: linear-gradient(90deg,rgba(117, 138, 147, 1) 0%, rgba(0, 90, 156, 1) 100%); */
 		&:before {
 			content: url('../images/calendar.svg');
 			margin-right: 10px;
