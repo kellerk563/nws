@@ -1,4 +1,4 @@
-// mapping "own" icons from openweathermap icons
+// mapping "own" icons from nws icons
 const ICON_MAPPING = {
 	"skc": "images/clear_day.svg",
 	"few": "images/partly_cloudy_day.svg",
@@ -49,11 +49,6 @@ function getIconCode(url) {
 	return iconCode;
 }
 
-// Example usage:
-// const url = "https://api.weather.gov/icons/land/night/ovc?size=medium";
-// const result = getPathAfterLastSlash(url);
-// console.log(result); // Output: ovc
-
 // if (navigator.geolocation) {
 // 	navigator.geolocation.getCurrentPosition(showPosition, showError);
 // } else {
@@ -83,7 +78,7 @@ async function getUserLocation() {
 		// Check if geolocation is even supported by the browser
 		if (!navigator.geolocation) {
 			console.warn("Geolocation not supported. Using defaults.");
-			return resolve(DEFAULT_COORDS);
+			return resolve(DEFAULT_COORDS); // this is down below as well...should it be returned twice?
 		}
 
 		navigator.geolocation.getCurrentPosition(
@@ -257,7 +252,7 @@ async function fetchWeatherData(latitude, longitude) {
 		// get lastest temp from latest obs response
 		if (latestObsData) { // is this enough or should it be checking for value?...same goes for the above
 			temp = latestObsData.properties.temperature.value;
-			temp = (temp * 9/5) + 32;
+			temp = (temp * 9/5) + 32; // c -> f
 		}
 
 		if (weatherData) { // update this condition
@@ -282,6 +277,7 @@ async function fetchWeatherData(latitude, longitude) {
 
 		if (latestObsData.properties.heatIndex.value) {
 			heatIndex = latestObsData.properties.heatIndex.value;
+			heatIndex = (heatIndex * 9/5) + 32;
 		}
 
 		if (latestObsData.properties.windSpeed.value) {
@@ -330,10 +326,11 @@ async function fetchWeatherData(latitude, longitude) {
 		}
 
 		const groupedData = groupByDate(data);
-		// console.log(JSON.stringify(groupedData, null, 2));
+		console.log(JSON.stringify(groupedData, null, 2));
 
 		// testing
 		// document.getElementById('data-output').innerHTML = JSON.stringify(data, null, 2);
+		console.log(JSON.stringify(data, null, 2));
 
 		// outputData(data);
 		outputData(groupedData);
@@ -344,18 +341,6 @@ async function fetchWeatherData(latitude, longitude) {
 }
 
 // ---------- go over
-
-// function getWindDirection(degrees) {
-// 	const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
-
-// 	// Normalize degrees to be within 0-360 range
-// 	let normalizedDegrees = ((degrees %= 360) < 0) ? degrees + 360 : degrees;
-
-// 	// Divide by 45 (360/8) and round to find index
-// 	const index = Math.round(normalizedDegrees / 45) % 8;
-
-// 	return directions[index];
-// }
 
 function getWindDirection(degrees) {
 	const directions = [
@@ -438,7 +423,7 @@ function outputData(groupedData) {
 	if (getToday.temp) {
 		const currTemp = document.createElement('span');
 		currTemp.classList.add('curr-temp');
-		currTemp.textContent = `${getToday.temp.toFixed(0)}°F`;
+		currTemp.textContent = `${getToday.temp.toFixed(0)}°`;
 		todaysForecast.appendChild(currTemp);
 	}
 
@@ -518,37 +503,7 @@ function outputData(groupedData) {
 		}
 
 		// high/low temps
-		if (dailyData[0].dayHighLow) {
-			const tempsContainer = document.createElement('div');
-			tempsContainer.classList.add('temps-container');
-
-			const temp = document.createElement('span');
-			temp.classList.add('temp');
-			temp.textContent = `${dailyData[0].dayHighLow}°F`;
-
-			const tempLabel = document.createElement('span');
-			tempLabel.classList.add('high');
-			tempLabel.textContent = 'H: ';
-
-			temp.prepend(tempLabel);
-			tempsContainer.appendChild(temp);
-
-			forecastContainer.appendChild(tempsContainer);
-
-			// having this nested is wrong, you can have a low without a high...
-			if (dailyData.length > 1 && dailyData[1].dayHighLow) {
-				const temp = document.createElement('span');
-				temp.classList.add('temp');
-				temp.textContent = `${dailyData[1].dayHighLow}°F`;
-
-				const tempLabel = document.createElement('span');
-				tempLabel.classList.add('low');
-				tempLabel.textContent = 'L: ';
-
-				temp.prepend(tempLabel);
-				tempsContainer.appendChild(temp);
-			}
-		}
+		renderTemperatures(dailyData, forecastContainer);
 
 		// append forecastContainer to sevenForecast
 		sevenForecast.appendChild(forecastContainer);
@@ -574,9 +529,59 @@ infoToggle.addEventListener('click', function() {
 	}
 });
 
-async function initApp() {
-	console.log("Fetching location...");
+/**
+ * Refactored Temperature Renderer
+ * @param {Array} dailyData - The array of weather objects
+ * @param {HTMLElement} forecastContainer - The parent element to append to
+ */
+function renderTemperatures(dailyData, forecastContainer) {
+	// 1. Safety check: Do we have any data?
+	if (!dailyData || dailyData.length === 0) return;
 
+	// 2. Extract all temperatures into a simple array of numbers [76, 5/6]
+	const temps = dailyData
+		.map(day => day.dayHighLow)
+		.filter(t => t !== undefined && t !== null);
+
+	if (temps.length === 0) return;
+
+	// 3. Calculate Low and High
+	const lowTemp = Math.min(...temps);
+	// Only define high if there's more than one temperature recorded
+	const highTemp = temps.length > 1 ? Math.max(...temps) : null;
+
+	// 4. Create the main container
+	const tempsContainer = document.createElement('div');
+	tempsContainer.classList.add('temps-container');
+
+	/**
+	 * Helper function to create a temperature span
+	 */
+	const createTempSpan = (value, style) => {
+		const tempSpan = document.createElement('span');
+		tempSpan.classList.add('temp');
+		tempSpan.classList.add(style);
+		tempSpan.append(`${value}°F`);
+		return tempSpan;
+	};
+
+	// 5. Build the UI
+	// Always add the Low temperature
+	const lowSpan = createTempSpan(lowTemp, 'low');
+	tempsContainer.appendChild(lowSpan);
+
+	// Only add the High temperature if it actually exists (is different from low)
+	if (highTemp !== null && highTemp !== lowTemp) {
+		const highSpan = createTempSpan(highTemp, 'high');
+		tempsContainer.appendChild(highSpan);
+	}
+
+	// 6. Final Append to the DOM
+	forecastContainer.appendChild(tempsContainer);
+}
+
+async function initApp() {
+	// console.log("Fetching location...");
 	const coords = await getUserLocation();
 
 	// The rest of your app doesn't care if the data is real or default

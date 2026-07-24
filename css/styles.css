@@ -4,15 +4,12 @@
 	box-sizing: border-box;
 }
 
-/* background: #005A9C; */
-
 body {
 	font-family: "Open Sans", sans-serif;
 	font-size: 100%;
 	color: #fff;
-	background: #758A93; /* fall back */
-	/* background: #005A9C; */
-	background: linear-gradient(90deg,rgba(117, 138, 147, 1) 0%, rgba(0, 90, 156, 1) 100%);
+	background: #005A9C; /* fall back */
+	/* background: linear-gradient(90deg,rgba(117, 138, 147, 1) 0%, rgba(0, 90, 156, 1) 100%); */
 }
 
 .wrapper {
@@ -26,7 +23,12 @@ body {
 	}
 }
 
-span:not(.temp):not(.temp .high):not(.temp .low) {
+/* span:not(.temp):not(.temp .high):not(.temp .low) {
+	display: block;
+	margin-bottom: 10px;
+} */
+
+span {
 	display: block;
 	margin-bottom: 10px;
 }
@@ -53,7 +55,6 @@ span:not(.temp):not(.temp .high):not(.temp .low) {
 		right: 26px;
 		border-width: 6px;
 		border-style: solid;
-		/* Top border is colored, others are transparent */
 		border-color: #2C3947 transparent transparent transparent;
 		transform: rotateX(180deg);
 	}
@@ -98,10 +99,6 @@ span:not(.temp):not(.temp .high):not(.temp .low) {
 		}
 	}
 
-	/* .location {
-		margin-bottom: 10px;
-	} */
-
 	.icon-container {
 		display: flex;
 		align-items: center;
@@ -114,7 +111,7 @@ span:not(.temp):not(.temp .high):not(.temp .low) {
 	.alert-description {
 		&:before {
 			display: inline-block;
-			content: url('../images/warning.svg');
+			content: url(../images/warning.svg);
 			width: 24px;
 			height: 24px;
 			margin-right: 5px;
@@ -146,7 +143,7 @@ span:not(.temp):not(.temp .high):not(.temp .low) {
 		margin: 0 20px;
 		border-bottom: 1px solid #fff;
 		&:before {
-			content: url('../images/calendar.svg');
+			content: url(../images/calendar.svg);
 			margin-right: 10px;
 		}
 	}
@@ -171,8 +168,28 @@ span:not(.temp):not(.temp .high):not(.temp .low) {
 
 		.temps-container {
 			display: flex;
+			flex-direction: row-reverse;
 			.temp {
+				display: flex;
 				margin-right: 10px;
+				&:after {
+					display: inline-block;
+					content: '';
+					width: 24px;
+					height: 24px;
+					background-size: contain;
+					background-repeat: no-repeat;
+				}
+				&.low {
+					&:after {
+						background-image: url(../images/arrow-down.svg);
+					}
+				}
+				&.high {
+					&:after {
+						background-image: url(../images/arrow-up.svg);
+					}
+				}
 			}
 		}
 	}
